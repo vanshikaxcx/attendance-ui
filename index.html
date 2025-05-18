@@ -1,109 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Smart Attendance System</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Attendance Portal</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      background-attachment: fixed;
-      background-size: cover;
-      padding: 40px;
-      text-align: center;
-      color: #ffffff;
+      color: #f0f0f0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 50px;
     }
 
-    h1 {
-      font-size: 3em;
-      margin-bottom: 20px;
-    }
-
-    form, .section {
+    .container {
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-      padding: 25px;
-      max-width: 450px;
-      margin: 20px auto;
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.2);
+      padding: 30px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
     }
 
-    input, select {
-      padding: 10px;
-      margin: 10px 0;
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      background: #f0f4f8;
-      outline: none;
-      transition: border 0.3s ease;
+    h2, h3 {
+      text-align: center;
     }
 
-    input:focus, select:focus {
-      border-color: #2575fc;
-    }
-
-    button {
-      background: linear-gradient(135deg, #6a11cb, #2575fc);
-      color: white;
-      cursor: pointer;
-      font-weight: bold;
+    .btn {
+      padding: 12px 24px;
+      margin: 10px 5px;
       border: none;
-      border-radius: 30px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-      padding: 12px 25px;
-      margin-top: 10px;
+      border-radius: 12px;
+      background: #4facfe;
+      background: linear-gradient(to right, #00f2fe, #4facfe);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
     }
 
-    .section h2 {
-      margin-bottom: 15px;
-      font-size: 1.5em;
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(to right, #43e97b, #38f9d7);
     }
 
-    .section p {
-      font-size: 1em;
-      color: #ddd;
+    .section {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .input-group {
+      margin: 10px 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    input[type="text"], input[type="date"] {
+      width: 100%;
+      padding: 8px;
+      border-radius: 10px;
+      border: none;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: rgba(255, 255, 255, 0.2);
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Welcome to the Smart Attendance Portal</h2>
+    
+    <!-- Login Section -->
+    <div id="loginSection">
+      <h3>Login as</h3>
+      <button class="btn" onclick="showSection('employeeSection')">Employee</button>
+      <button class="btn" onclick="showSection('managerSection')">Manager</button>
+    </div>
 
-  <h1>Smart Attendance System</h1>
+    <!-- Employee Portal -->
+    <div id="employeeSection" class="section">
+      <h3>Employee Portal</h3>
+      <div class="input-group">
+        <label for="empName">Name:</label>
+        <input type="text" id="empName" placeholder="Enter your name">
+      </div>
+      <div class="input-group">
+        <label for="location">Current Location:</label>
+        <button class="btn" onclick="getLocation()">Get My Location</button>
+        <p id="locationOutput"></p>
+      </div>
+      <button class="btn" onclick="markAttendance()">Mark Attendance</button>
+      <button class="btn" onclick="toggleWFH()">Work From Home</button>
+      <button class="btn" onclick="markHoliday()">Mark Holiday</button>
+      <button class="btn" onclick="viewHistory()">View My History</button>
+      <div id="empHistory" class="section">
+        <h4>Your Attendance History</h4>
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody id="empHistoryTable">
+            <!-- History Rows Here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-  <form>
-    <input type="text" placeholder="Username" required><br>
-    <input type="password" placeholder="Password" required><br>
-    <button type="submit">Login</button>
-  </form>
-
-  <div class="section">
-    <h2>Employee Panel</h2>
-    <p>Mark your attendance with a single click.</p>
-    <button>Mark Attendance</button>
-  </div>
-
-  <div class="section">
-    <h2>Manager Panel</h2>
-    <p>Generate attendance reports effortlessly.</p>
-    <button>Generate Report</button>
+    <!-- Manager Portal -->
+    <div id="managerSection" class="section">
+      <h3>Manager Dashboard</h3>
+      <button class="btn" onclick="loadAllRecords()">Load All Records</button>
+      <div id="managerTable" class="section">
+        <table>
+          <thead>
+            <tr><th>Name</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody id="allRecordsTable">
+            <!-- Records go here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script>
-    document.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('mouseenter', () => {
-        btn.style.transform = 'scale(1.05)';
-        btn.style.boxShadow = '0 6px 18px rgba(0,0,0,0.4)';
-      });
-      btn.addEventListener('mouseleave', () => {
-        btn.style.transform = 'scale(1)';
-        btn.style.boxShadow = '0 4px 14px rgba(0,0,0,0.2)';
-      });
-    });
-  </script>
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
 
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          document.getElementById("locationOutput").innerText = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+        }, () => {
+          document.getElementById("locationOutput").innerText = "Permission Denied";
+        });
+      } else {
+        document.getElementById("locationOutput").innerText = "Geolocation not supported";
+      }
+    }
+
+    function markAttendance() {
+      alert("Attendance marked (mock). Integrate API in server.js.");
+    }
+
+    function toggleWFH() {
+      alert("Work From Home status toggled (mock).");
+    }
+
+    function markHoliday() {
+      alert("Holiday marked for today (mock).");
+    }
+
+    function viewHistory() {
+      const table = document.getElementById("empHistoryTable");
+      table.innerHTML = `<tr><td>2025-05-18</td><td>Present</td><tr><td>2025-05-17</td><td>WFH</td>`;
+      document.getElementById("empHistory").style.display = 'block';
+    }
+
+    function loadAllRecords() {
+      const table = document.getElementById("allRecordsTable");
+      table.innerHTML = `
+        <tr><td>Vanshika</td><td>2025-05-18</td><td>Present</td></tr>
+        <tr><td>Rudransh</td><td>2025-05-18</td><td>Holiday</td></tr>
+        <tr><td>Neha</td><td>2025-05-18</td><td>WFH</td></tr>
+      `;
+      document.getElementById("managerTable").style.display = 'block';
+    }
+  </script>
 </body>
 </html>

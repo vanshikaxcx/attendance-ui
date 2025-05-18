@@ -1,195 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Smart Attendance Portal</title>
+  <meta charset="UTF-8">
+  <title>Smart Attendance System</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      color: #f0f0f0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding-top: 50px;
-    }
-
-    .container {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 30px;
-      border-radius: 20px;
-      width: 90%;
-      max-width: 600px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-    }
-
-    h2, h3 {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      padding: 40px;
       text-align: center;
     }
 
-    .btn {
-      padding: 12px 24px;
-      margin: 10px 5px;
-      border: none;
-      border-radius: 12px;
-      background: #4facfe;
-      background: linear-gradient(to right, #00f2fe, #4facfe);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s ease, background 0.3s ease;
+    h1, h2 {
+      color: #e3f2fd;
     }
 
-    .btn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(to right, #43e97b, #38f9d7);
-    }
-
-    .section {
-      display: none;
-      margin-top: 20px;
-    }
-
-    .input-group {
-      margin: 10px 0;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    input[type="text"], input[type="date"] {
-      width: 100%;
-      padding: 8px;
+    form, .section {
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
-      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      padding: 20px;
+      max-width: 500px;
+      margin: 20px auto;
+      backdrop-filter: blur(10px);
+    }
+
+    input, select, button, textarea {
+      padding: 10px;
+      margin: 10px 0;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      background: #1e88e5;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #1565c0;
     }
 
     table {
       width: 100%;
       margin-top: 20px;
       border-collapse: collapse;
-      background-color: rgba(255,255,255,0.1);
+      color: #fff;
     }
 
     th, td {
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ccc;
+      text-align: center;
     }
 
-    th {
-      background-color: rgba(255, 255, 255, 0.2);
+    tr:hover {
+      background-color: rgba(255,255,255,0.1);
+    }
+
+    .toggle-group, .filters {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Welcome to the Smart Attendance Portal</h2>
-    
-    <!-- Login Section -->
-    <div id="loginSection">
-      <h3>Login as</h3>
-      <button class="btn" onclick="showSection('employeeSection')">Employee</button>
-      <button class="btn" onclick="showSection('managerSection')">Manager</button>
-    </div>
+<h1>Smart Attendance System</h1>
 
-    <!-- Employee Portal -->
-    <div id="employeeSection" class="section">
-      <h3>Employee Portal</h3>
-      <div class="input-group">
-        <label for="empName">Name:</label>
-        <input type="text" id="empName" placeholder="Enter your name">
-      </div>
-      <div class="input-group">
-        <label for="location">Current Location:</label>
-        <button class="btn" onclick="getLocation()">Get My Location</button>
-        <p id="locationOutput"></p>
-      </div>
-      <button class="btn" onclick="markAttendance()">Mark Attendance</button>
-      <button class="btn" onclick="toggleWFH()">Work From Home</button>
-      <button class="btn" onclick="markHoliday()">Mark Holiday</button>
-      <button class="btn" onclick="viewHistory()">View My History</button>
-      <div id="empHistory" class="section">
-        <h4>Your Attendance History</h4>
-        <table>
-          <thead>
-            <tr><th>Date</th><th>Status</th></tr>
-          </thead>
-          <tbody id="empHistoryTable">
-            <!-- History Rows Here -->
-          </tbody>
-        </table>
-      </div>
-    </div>
+<div class="section">
+  <h2>Login</h2>
+  <input id="username" placeholder="Username" />
+  <input id="password" type="password" placeholder="Password" />
+  <select id="role">
+    <option value="employee">Employee</option>
+    <option value="manager">Manager</option>
+  </select>
+  <button onclick="login()">🔐 Login</button>
+</div>
 
-    <!-- Manager Portal -->
-    <div id="managerSection" class="section">
-      <h3>Manager Dashboard</h3>
-      <button class="btn" onclick="loadAllRecords()">Load All Records</button>
-      <div id="managerTable" class="section">
-        <table>
-          <thead>
-            <tr><th>Name</th><th>Date</th><th>Status</th></tr>
-          </thead>
-          <tbody id="allRecordsTable">
-            <!-- Records go here -->
-          </tbody>
-        </table>
-      </div>
+<div class="section hidden" id="employeeSection">
+  <h2>Welcome, Employee!</h2>
+  <div class="toggle-group">
+    <label><input type="checkbox" id="isWFH" /> Work From Home</label>
+    <label><input type="checkbox" id="isHoliday" /> Holiday</label>
+  </div>
+  <button onclick="logAttendance()">📍 Mark Attendance</button>
+  <button onclick="toggleHistory()">📋 View My Attendance History</button>
+
+  <div id="historySection" class="hidden">
+    <div class="filters">
+      <select id="filterWFH" onchange="fetchMyHistory()">
+        <option value="">WFH Filter</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+      <select id="filterHoliday" onchange="fetchMyHistory()">
+        <option value="">Holiday Filter</option>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
     </div>
+    <table id="myHistoryTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>WFH</th>
+          <th>Holiday</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
-  <script>
-    function showSection(id) {
-      document.querySelectorAll('.section').forEach(section => section.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
-    }
+  <h3>Apply for Leave</h3>
+  <textarea id="leaveReason" placeholder="Reason for leave..."></textarea>
+  <button onclick="applyLeave()">📨 Submit Leave Request</button>
+</div>
 
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          document.getElementById("locationOutput").innerText = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
-        }, () => {
-          document.getElementById("locationOutput").innerText = "Permission Denied";
-        });
+<div class="section hidden" id="managerSection">
+  <h2>Welcome, Manager!</h2>
+  <button onclick="fetchAllAttendance()">📊 View All Attendance</button>
+  <table id="allAttendanceTable" class="hidden">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Date</th>
+        <th>WFH</th>
+        <th>Holiday</th>
+        <th>Location</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h3>Leave Requests</h3>
+  <div id="leaveRequests"></div>
+</div>
+
+<script>
+  let token = '';
+
+  async function login() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+
+    const res = await fetch('https://attendance-app-6bla.onrender.com/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, role })
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      token = data.token;
+      if (role === 'employee') {
+        document.getElementById('employeeSection').classList.remove('hidden');
+        document.getElementById('managerSection').classList.add('hidden');
       } else {
-        document.getElementById("locationOutput").innerText = "Geolocation not supported";
+        document.getElementById('managerSection').classList.remove('hidden');
+        document.getElementById('employeeSection').classList.add('hidden');
+        fetchLeaveRequests();
       }
+    } else {
+      alert(data.message || 'Login failed');
     }
+  }
 
-    function markAttendance() {
-      alert("Attendance marked (mock). Integrate API in server.js.");
-    }
+  async function logAttendance() {
+    if (!navigator.geolocation) return alert('Geolocation not supported');
 
-    function toggleWFH() {
-      alert("Work From Home status toggled (mock).");
-    }
+    navigator.geolocation.getCurrentPosition(async pos => {
+      const isWFH = document.getElementById('isWFH').checked;
+      const isHoliday = document.getElementById('isHoliday').checked;
+      const location = { lat: pos.coords.latitude, lng: pos.coords.longitude };
 
-    function markHoliday() {
-      alert("Holiday marked for today (mock).");
-    }
+      const res = await fetch('https://attendance-app-6bla.onrender.com/log-attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, location, isWFH, isHoliday })
+      });
 
-    function viewHistory() {
-      const table = document.getElementById("empHistoryTable");
-      table.innerHTML = `<tr><td>2025-05-18</td><td>Present</td><tr><td>2025-05-17</td><td>WFH</td>`;
-      document.getElementById("empHistory").style.display = 'block';
-    }
+      const data = await res.json();
+      alert(data.message);
+    }, err => alert('Error getting location'));
+  }
 
-    function loadAllRecords() {
-      const table = document.getElementById("allRecordsTable");
-      table.innerHTML = `
-        <tr><td>Vanshika</td><td>2025-05-18</td><td>Present</td></tr>
-        <tr><td>Rudransh</td><td>2025-05-18</td><td>Holiday</td></tr>
-        <tr><td>Neha</td><td>2025-05-18</td><td>WFH</td></tr>
-      `;
-      document.getElementById("managerTable").style.display = 'block';
+  function toggleHistory() {
+    const historySection = document.getElementById('historySection');
+    historySection.classList.toggle('hidden');
+    if (!historySection.classList.contains('hidden')) fetchMyHistory();
+  }
+
+  async function fetchMyHistory() {
+    const filterWFH = document.getElementById('filterWFH').value;
+    const filterHoliday = document.getElementById('filterHoliday').value;
+
+    const res = await fetch('https://attendance-app-6bla.onrender.com/my-attendance', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    const tableBody = document.querySelector('#myHistoryTable tbody');
+    tableBody.innerHTML = '';
+
+    if (res.ok && Array.isArray(data.attendance)) {
+      let filtered = data.attendance;
+      if (filterWFH) filtered = filtered.filter(r => r.isWFH === (filterWFH === 'yes'));
+      if (filterHoliday) filtered = filtered.filter(r => r.isHoliday === (filterHoliday === 'yes'));
+
+      if (filtered.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="4">No matching records</td></tr>';
+      } else {
+        filtered.forEach(record => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${new Date(record.date).toLocaleDateString()}</td>
+            <td>${record.isWFH ? 'Yes' : 'No'}</td>
+            <td>${record.isHoliday ? 'Yes' : 'No'}</td>
+            <td>${record.location ? `(${record.location.lat.toFixed(3)}, ${record.location.lng.toFixed(3)})` : 'N/A'}</td>
+          `;
+          tableBody.appendChild(tr);
+        });
+      }
+    } else {
+      tableBody.innerHTML = '<tr><td colspan="4">Error loading data.</td></tr>';
     }
-  </script>
+  }
+
+  async function fetchAllAttendance() {
+    const res = await fetch('https://attendance-app-6bla.onrender.com/attendance-data', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    const table = document.getElementById('allAttendanceTable');
+    const tbody = table.querySelector('tbody');
+    tbody.innerHTML = '';
+
+    if (res.ok && Array.isArray(data.attendance)) {
+      data.attendance.forEach(record => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${record.username}</td>
+          <td>${new Date(record.date).toLocaleDateString()}</td>
+          <td>${record.isWFH ? 'Yes' : 'No'}</td>
+          <td>${record.isHoliday ? 'Yes' : 'No'}</td>
+          <td>${record.location ? `(${record.location.lat.toFixed(3)}, ${record.location.lng.toFixed(3)})` : 'N/A'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+      table.classList.remove('hidden');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="5">Failed to load data</td></tr>';
+      table.classList.remove('hidden');
+    }
+  }
+
+  async function applyLeave() {
+    const reason = document.getElementById('leaveReason').value;
+    if (!reason) return alert('Please enter a reason');
+
+    const res = await fetch('https://attendance-app-6bla.onrender.com/apply-leave', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, reason })
+    });
+    const data = await res.json();
+    alert(data.message);
+  }
+
+  async function fetchLeaveRequests() {
+    const res = await fetch('https://attendance-app-6bla.onrender.com/leave-requests', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const container = document.getElementById('leaveRequests');
+    container.innerHTML = '';
+
+    if (res.ok && Array.isArray(data.requests)) {
+      data.requests.forEach(req => {
+        const div = document.createElement('div');
+        div.style.marginBottom = '15px';
+        div.innerHTML = `
+          <strong>${req.username}</strong>: ${req.reason} <br>
+          <button onclick="handleLeave('${req.id}', true)">✅ Approve</button>
+          <button onclick="handleLeave('${req.id}', false)">❌ Reject</button>
+        `;
+        container.appendChild(div);
+      });
+    } else {
+      container.innerHTML = '<p>No leave requests found.</p>';
+    }
+  }
+
+  async function handleLeave(id, approved) {
+    const res = await fetch('https://attendance-app-6bla.onrender.com/handle-leave', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token, id, approved })
+    });
+    const data = await res.json();
+    alert(data.message);
+    fetchLeaveRequests();
+  }
+</script>
 </body>
 </html>
